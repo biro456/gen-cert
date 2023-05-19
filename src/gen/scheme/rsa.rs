@@ -11,12 +11,12 @@ use rsa::traits::PublicKeyParts;
 use rsa::RsaPrivateKey;
 use sha2::{Digest, Sha256, Sha384, Sha512};
 use signature::{RandomizedSigner, SignatureEncoding};
-use spki::{SubjectPublicKeyInfoOwned};
+use spki::SubjectPublicKeyInfoOwned;
 
 use crate::error::*;
 
-use super::{PrivateKey, SchemeTrait};
 use super::oid::SignatureOid;
+use super::{PrivateKey, SchemeTrait};
 
 #[derive(Default)]
 pub struct Rsa<const SIZE: usize, D: Digest + AssociatedOid>(PhantomData<D>);

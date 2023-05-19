@@ -8,8 +8,8 @@ use spki::SubjectPublicKeyInfoOwned;
 
 use crate::error::*;
 
-use super::{PrivateKey, SchemeTrait};
 use super::oid::SignatureOid;
+use super::{PrivateKey, SchemeTrait};
 
 #[derive(Default)]
 pub struct Ed25519;

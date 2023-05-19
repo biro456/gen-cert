@@ -8,7 +8,7 @@ use yew::prelude::*;
 use crate::gen::scheme::ecdsa::Ecdsa;
 use crate::gen::scheme::ed25519::Ed25519;
 use crate::gen::scheme::rsa::Rsa;
-use crate::gen::scheme::SchemeTrait as SchemeTrait;
+use crate::gen::scheme::SchemeTrait;
 use crate::ui::components::basic::*;
 use crate::ui::hooks::*;
 
@@ -74,24 +74,12 @@ impl SchemeName {
 	fn into_scheme(&self) -> Option<Rc<dyn SchemeTrait>> {
 		match self {
 			SchemeName::None => None,
-			SchemeName::Rsa2048WithSha256 => {
-				Some(Rc::new(Rsa::<2048, sha2::Sha256>::default()))
-			}
-			SchemeName::Rsa4096WithSha256 => {
-				Some(Rc::new(Rsa::<4096, sha2::Sha256>::default()))
-			}
-			SchemeName::Rsa2048WithSha384 => {
-				Some(Rc::new(Rsa::<2048, sha2::Sha384>::default()))
-			}
-			SchemeName::Rsa4096WithSha384 => {
-				Some(Rc::new(Rsa::<4096, sha2::Sha384>::default()))
-			}
-			SchemeName::Rsa2048WithSha512 => {
-				Some(Rc::new(Rsa::<2048, sha2::Sha512>::default()))
-			}
-			SchemeName::Rsa4096WithSha512 => {
-				Some(Rc::new(Rsa::<4096, sha2::Sha512>::default()))
-			}
+			SchemeName::Rsa2048WithSha256 => Some(Rc::new(Rsa::<2048, sha2::Sha256>::default())),
+			SchemeName::Rsa4096WithSha256 => Some(Rc::new(Rsa::<4096, sha2::Sha256>::default())),
+			SchemeName::Rsa2048WithSha384 => Some(Rc::new(Rsa::<2048, sha2::Sha384>::default())),
+			SchemeName::Rsa4096WithSha384 => Some(Rc::new(Rsa::<4096, sha2::Sha384>::default())),
+			SchemeName::Rsa2048WithSha512 => Some(Rc::new(Rsa::<2048, sha2::Sha512>::default())),
+			SchemeName::Rsa4096WithSha512 => Some(Rc::new(Rsa::<4096, sha2::Sha512>::default())),
 			SchemeName::EcdsaP256 => {
 				Some(Rc::new(Ecdsa::<p256::NistP256, sha2::Sha256>::default()))
 			}
