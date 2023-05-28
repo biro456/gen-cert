@@ -7,6 +7,7 @@ use web_sys::{HtmlInputElement, HtmlOptionElement, HtmlSelectElement};
 use yew::prelude::*;
 
 use gen::alt_name::{AltName, AltNameType};
+
 use crate::ui::hooks::*;
 
 #[derive(Debug, PartialEq, Properties)]

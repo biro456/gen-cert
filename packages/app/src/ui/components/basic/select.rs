@@ -8,10 +8,7 @@ use yew::prelude::*;
 
 use crate::ui::hooks::Slot;
 
-pub trait Selectable:
-	Copy + PartialEq + Display + Sequence + 'static
-{
-}
+pub trait Selectable: Copy + PartialEq + Display + Sequence + 'static {}
 
 impl<T: Copy + PartialEq + Display + Sequence + 'static> Selectable for T {}
 
