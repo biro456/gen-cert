@@ -58,9 +58,3 @@ pub fn use_slot<T: Clone + 'static>(initial: impl FnOnce() -> T) -> Slot<T> {
 pub fn use_slot_with_default<T: Clone + Default + 'static>() -> Slot<T> {
 	Slot(use_state(|| T::default()))
 }
-
-#[hook]
-#[inline]
-pub fn use_string() -> Slot<String> {
-	use_slot_with_default()
-}

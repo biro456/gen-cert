@@ -1,6 +1,3 @@
-mod error;
-mod gen;
-mod prelude;
 mod ui;
 
 use crate::ui::components::App;

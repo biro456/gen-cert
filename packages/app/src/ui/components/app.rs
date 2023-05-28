@@ -4,26 +4,26 @@ use closure::closure;
 use x509_cert::name::Name;
 use yew::prelude::*;
 
-use crate::gen::alt_name::AltName;
-use crate::gen::duration::parse_duration_str;
-use crate::gen::scheme::SchemeTrait;
-use crate::gen::self_signed::gen_self_signed;
-use crate::gen::self_signed::SelfSignedCertOptions;
 use crate::ui::components::basic::*;
 use crate::ui::components::*;
 use crate::ui::hooks::*;
+use gen::alt_name::AltName;
+use gen::duration::parse_duration_str;
+use gen::scheme::SignatureStrategy;
+use gen::self_signed::gen_self_signed;
+use gen::self_signed::SelfSignedCertOptions;
 
 #[function_component]
 pub fn App() -> Html {
-	let scheme: Slot<Option<Rc<dyn SchemeTrait>>> = use_slot_with_default();
+	let scheme: Slot<Option<Rc<dyn SignatureStrategy>>> = use_slot_with_default();
 
 	let subject: Slot<Name> = use_slot_with_default();
-	let duration = use_string();
+	let duration: Slot<String> = use_slot_with_default();
 
 	let san: Slot<Vec<AltName>> = use_slot_with_default();
 
-	let key = use_string();
-	let crt = use_string();
+	let key: Slot<String> = use_slot_with_default();
+	let crt: Slot<String> = use_slot_with_default();
 
 	let onclick_generate = closure!(
 		clone scheme,
@@ -33,10 +33,9 @@ pub fn App() -> Html {
 		clone key,
 		clone crt,
 		|_| {
-
 			if let Some(scheme) = (*scheme).as_ref() {
 				let pair = gen_self_signed(
-					(*scheme).clone(),
+					scheme.as_ref(),
 					SelfSignedCertOptions {
 						issuer: subject.get(),
 						subject: subject.get(),

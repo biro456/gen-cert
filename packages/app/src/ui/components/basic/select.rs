@@ -1,6 +1,6 @@
 use std::fmt::Display;
-use std::str::FromStr;
 
+use closure::closure;
 use enum_iterator::Sequence;
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlOptionElement, HtmlSelectElement};
@@ -9,31 +9,26 @@ use yew::prelude::*;
 use crate::ui::hooks::Slot;
 
 pub trait Selectable:
-	Copy + PartialEq + Display + Sequence + From<u8> + Into<u8> + 'static
+	Copy + PartialEq + Display + Sequence + 'static
 {
-	fn from_value(value: &str) -> Self {
-		u8::from_str(&value).map(|val| val.into()).unwrap()
-	}
-
-	fn into_value(&self) -> String {
-		Into::<u8>::into(*self).to_string()
-	}
 }
 
-impl<T: Copy + PartialEq + Display + Sequence + From<u8> + Into<u8> + 'static> Selectable for T {}
+impl<T: Copy + PartialEq + Display + Sequence + 'static> Selectable for T {}
 
 #[derive(Properties, PartialEq)]
 pub struct SelectProps<T: Selectable> {
 	#[prop_or_default]
-	pub slot: Option<Slot<T>>,
+	pub slot: Option<Slot<Option<T>>>,
 }
 
 #[function_component]
 pub fn Select<T: Selectable>(props: &SelectProps<T>) -> Html {
+	let items: Vec<_> = enum_iterator::all::<T>().collect();
+
 	let (value, onchange) = props
 		.slot
 		.clone()
-		.map(|slot| {
+		.map(closure!(clone items, |slot| {
 			let callback = slot.change_handler();
 
 			(slot.get(), move |evt: Event| {
@@ -45,18 +40,26 @@ pub fn Select<T: Selectable>(props: &SelectProps<T>) -> Html {
 					.dyn_into::<HtmlOptionElement>()
 					.unwrap();
 
-				callback.emit(T::from_value(&selected.value()));
+				let value = usize::from_str_radix(&selected.value(), 10).unwrap();
+
+				callback.emit(if value == 0 { None } else { Some(items.get(value - 1).unwrap().clone()) });
 			})
-		})
+		}))
 		.unzip();
+
+	let value = value.flatten();
 
 	html! {
 		<select {onchange}>
+			<option value="0" selected={ value.is_none() } />
 			{
-				for enum_iterator::all::<T>()
-					.map(|item| {
+				for items
+					.clone()
+					.into_iter()
+					.enumerate()
+					.map(|(index, item)| {
 						html!(
-							<option value={ item.into_value() }
+							<option value={ (index + 1).to_string() }
 								selected={ value == Some(item) }>
 								{ format!("{}", item) }
 							</option>

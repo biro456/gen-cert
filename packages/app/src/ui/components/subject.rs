@@ -5,7 +5,7 @@ use x509_cert::attr::AttributeTypeAndValue;
 use x509_cert::name::{Name, RdnSequence, RelativeDistinguishedName};
 use yew::prelude::*;
 
-use crate::prelude::*;
+use common::*;
 
 use crate::ui::components::basic::*;
 use crate::ui::hooks::*;
@@ -18,12 +18,12 @@ pub struct SubjectProps {
 
 #[function_component]
 pub fn Subject(props: &SubjectProps) -> Html {
-	let common_name = use_string();
-	let organization = use_string();
-	let organizational_unit = use_string();
-	let locality = use_string();
-	let state = use_string();
-	let country = use_string();
+	let common_name: Slot<String> = use_slot_with_default();
+	let organization: Slot<String> = use_slot_with_default();
+	let organizational_unit: Slot<String> = use_slot_with_default();
+	let locality: Slot<String> = use_slot_with_default();
+	let state: Slot<String> = use_slot_with_default();
+	let country: Slot<String> = use_slot_with_default();
 
 	let onchange = props.onchange.clone();
 

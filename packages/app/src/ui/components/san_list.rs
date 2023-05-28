@@ -6,7 +6,7 @@ use wasm_bindgen::JsCast;
 use web_sys::{HtmlInputElement, HtmlOptionElement, HtmlSelectElement};
 use yew::prelude::*;
 
-use crate::gen::alt_name::{AltName, AltNameType};
+use gen::alt_name::{AltName, AltNameType};
 use crate::ui::hooks::*;
 
 #[derive(Debug, PartialEq, Properties)]
@@ -47,7 +47,7 @@ impl Component for SANList {
 		}
 	}
 
-	fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+	fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
 		match msg {
 			SANListMessage::UpdateToAddType(value) => {
 				self.to_add_type = value.clone();
@@ -60,6 +60,10 @@ impl Component for SANList {
 			SANListMessage::Add => {
 				self.list
 					.push(AltName::parse(self.to_add_type, &self.to_add_value));
+
+				if let Some(slot) = ctx.props().slot.as_ref() {
+					slot.set(self.list.clone())
+				}
 
 				true
 			}

@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use nom::IResult;
 
-use crate::prelude::*;
+use common::*;
 
 const SECS_PER_YEAR: u64 = 365 * SECS_PER_DAY;
 const SECS_PER_MONTH: u64 = 30 * SECS_PER_DAY;

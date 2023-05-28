@@ -7,7 +7,7 @@ use num_enum::{FromPrimitive, IntoPrimitive};
 use parse_display::Display;
 use x509_cert::ext::pkix::name::GeneralName;
 
-use crate::prelude::*;
+use common::*;
 
 #[derive(
 	Debug, Clone, Copy, PartialEq, Display, Sequence, Default, FromPrimitive, IntoPrimitive,

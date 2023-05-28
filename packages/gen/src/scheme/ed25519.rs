@@ -1,20 +1,32 @@
-use const_oid::ObjectIdentifier;
-use der::asn1::BitString;
-use der::referenced::RefToOwned;
-use ed25519_dalek::pkcs8::{KeypairBytes, ALGORITHM_ID, ALGORITHM_OID};
+use der::{AnyRef, Decode};
+use ed25519_dalek::pkcs8::{KeypairBytes, ALGORITHM_ID};
 use ed25519_dalek::{Signer, SigningKey};
 use pkcs8::{EncodePrivateKey, LineEnding};
-use spki::SubjectPublicKeyInfoOwned;
+use spki::{
+	AlgorithmIdentifier, AlgorithmIdentifierRef, AssociatedAlgorithmIdentifier, EncodePublicKey,
+	SignatureAlgorithmIdentifier, SubjectPublicKeyInfoOwned,
+};
 
-use crate::error::*;
+use common::*;
 
-use super::oid::SignatureOid;
-use super::{PrivateKey, SchemeTrait};
+use super::{PrivateKey, SignatureStrategy};
 
 #[derive(Default)]
 pub struct Ed25519;
 
-impl SchemeTrait for Ed25519 {
+impl AssociatedAlgorithmIdentifier for Ed25519 {
+	type Params = AnyRef<'static>;
+
+	const ALGORITHM_IDENTIFIER: AlgorithmIdentifierRef<'static> = ALGORITHM_ID;
+}
+
+impl SignatureAlgorithmIdentifier for Ed25519 {
+	type Params = AnyRef<'static>;
+
+	const SIGNATURE_ALGORITHM_IDENTIFIER: AlgorithmIdentifier<Self::Params> = ALGORITHM_ID;
+}
+
+impl SignatureStrategy for Ed25519 {
 	fn generate_key(&self) -> Result<Box<dyn PrivateKey>> {
 		let mut rng = rand::thread_rng();
 
@@ -24,20 +36,13 @@ impl SchemeTrait for Ed25519 {
 
 pub struct Ed25519Key(SigningKey);
 
-impl SignatureOid for Ed25519Key {
-	fn signature_oid(&self) -> ObjectIdentifier {
-		ALGORITHM_OID
-	}
-}
-
 impl PrivateKey for Ed25519Key {
 	fn to_subject_public_key_info(&self) -> Result<SubjectPublicKeyInfoOwned> {
 		let public_key = self.0.verifying_key();
 
-		Ok(SubjectPublicKeyInfoOwned {
-			algorithm: ALGORITHM_ID.ref_to_owned(),
-			subject_public_key: BitString::from_bytes(public_key.as_bytes())?,
-		})
+		Ok(SubjectPublicKeyInfoOwned::from_der(
+			public_key.to_public_key_der()?.as_bytes(),
+		)?)
 	}
 
 	fn to_pem(&self, line_ending: LineEnding) -> Result<String> {

@@ -14,8 +14,8 @@ use x509_cert::serial_number::SerialNumber;
 use x509_cert::time::{Time, Validity};
 use x509_cert::{Certificate, TbsCertificate, Version};
 
-use crate::error::*;
-use crate::gen::scheme::PrivateKey;
+use crate::scheme::{PrivateKey, SignatureStrategy};
+use common::*;
 
 use super::alt_name::AltName;
 
@@ -43,11 +43,10 @@ impl OptionsBuilder {
 }
 
 pub fn gen_tbs_certificate(
-	key: impl AsRef<dyn PrivateKey>,
+	strategy: &dyn SignatureStrategy,
+	key: &dyn PrivateKey,
 	options: Options,
 ) -> Result<TbsCertificate> {
-	let key = key.as_ref();
-
 	let now = OffsetDateTime::now_utc();
 	let expiry = now.clone() + options.duration;
 
@@ -62,7 +61,7 @@ pub fn gen_tbs_certificate(
 		version: Version::V3,
 
 		serial_number: SerialNumber::new(Uuid::new_v4().as_bytes())?,
-		signature: key.signature_algorithm(),
+		signature: strategy.signature_algorithm_identifier()?,
 
 		issuer: options.issuer,
 		issuer_unique_id: None,
@@ -103,16 +102,15 @@ pub fn gen_tbs_certificate(
 }
 
 pub fn sign_certificate(
-	key: impl AsRef<dyn PrivateKey>,
+	strategy: &dyn SignatureStrategy,
+	key: &dyn PrivateKey,
 	tbs_certificate: TbsCertificate,
 ) -> Result<Certificate> {
-	let key = key.as_ref();
-
 	let signature = key.sign(&tbs_certificate.to_der()?)?;
 
 	let certificate = Certificate {
 		tbs_certificate,
-		signature_algorithm: key.signature_algorithm(),
+		signature_algorithm: strategy.signature_algorithm_identifier()?,
 		signature: BitString::from_bytes(&signature)?,
 	};
 
