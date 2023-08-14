@@ -12,7 +12,7 @@ const-oid = "0.9"
 der = { version = "0.7", features = ["time"] }
 derive_builder = "0.12"
 ecdsa = { version = "0.16", features = ["signing"] }
-ed25519-dalek = { version = "2.0.0-rc.2", features = ["rand_core", "pem"] }
+ed25519-dalek = { version = "2.0.0", features = ["rand_core", "pem"] }
 enum-iterator = "1.4"
 elliptic-curve = "0.13"
 k256 = { version = "0.13", features = ["pem"] }
