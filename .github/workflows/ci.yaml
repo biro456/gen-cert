@@ -17,7 +17,7 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
       - uses: actions-rust-lang/rustfmt@v1
       - uses: jetli/trunk-action@v0.4.0
-      - run: trunk build --release
+      - run: trunk build --release --public-url /gen-cert/
       - uses: actions/upload-pages-artifact@v1
         with:
           path: dist/
