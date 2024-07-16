@@ -27,7 +27,15 @@ pub fn Subject(props: &SubjectProps) -> Html {
 
 	let onchange = props.onchange.clone();
 
-	use_effect_with_deps(
+	use_effect_with(
+		(
+			common_name.get(),
+			organization.get(),
+			organizational_unit.get(),
+			locality.get(),
+			state.get(),
+			country.get(),
+		),
 		|(cn, o, ou, l, s, c)| {
 			if let Some(onchange) = onchange {
 				let mut parts = Vec::<RelativeDistinguishedName>::default();
@@ -44,14 +52,6 @@ pub fn Subject(props: &SubjectProps) -> Html {
 				onchange.emit(value);
 			}
 		},
-		(
-			common_name.get(),
-			organization.get(),
-			organizational_unit.get(),
-			locality.get(),
-			state.get(),
-			country.get(),
-		),
 	);
 
 	html! {

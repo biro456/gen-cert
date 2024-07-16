@@ -1,25 +1,7 @@
-use std::fmt::Display;
-use std::str::FromStr;
-
-use enum_iterator::Sequence;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
 use crate::ui::hooks::Slot;
-
-pub trait Selectable:
-	Copy + PartialEq + Display + Sequence + From<u8> + Into<u8> + 'static
-{
-	fn from_value(value: &str) -> Self {
-		u8::from_str(&value).map(|val| val.into()).unwrap()
-	}
-
-	fn into_value(&self) -> String {
-		Into::<u8>::into(*self).to_string()
-	}
-}
-
-impl<T: Copy + PartialEq + Display + Sequence + From<u8> + Into<u8> + 'static> Selectable for T {}
 
 #[derive(Properties, PartialEq)]
 pub struct InputProps {

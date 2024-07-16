@@ -27,13 +27,13 @@ pub fn Scheme(props: &SchemeSelectorProps) -> Html {
 
 	let onchange = props.onchange.clone();
 
-	use_effect_with_deps(
+	use_effect_with(
+		*signature_algorithm,
 		move |signature_algorithm| {
 			if let Some(onchange) = onchange {
 				onchange.emit(signature_algorithm.map(|alg| alg.into_scheme()))
 			}
 		},
-		*signature_algorithm,
 	);
 
 	html! {

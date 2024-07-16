@@ -11,10 +11,10 @@ common = { path = "../common" }
 closure = "0.3"
 const-oid = "0.9"
 der = "0.7"
-enum-iterator = "1.4"
+enum-iterator = "2.1"
 num_enum = "0.7"
-parse-display = "0.8"
+parse-display = "0.9"
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = ["HtmlOptionElement", "HtmlSelectElement"] }
 x509-cert = "0.2"
-yew = { version = "0.20", features = ["csr"] }
+yew = { version = "0.21", features = ["csr"] }
